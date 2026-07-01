@@ -1,0 +1,106 @@
+$date
+	Wed Jul  1 15:09:53 2026
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module pump_fsm_tb $end
+$var wire 1 ! pump_on $end
+$var reg 1 " clk $end
+$var reg 1 # dry $end
+$var reg 1 $ reset $end
+$var integer 32 % fail_count [31:0] $end
+$var integer 32 & pass_count [31:0] $end
+$scope module uut $end
+$var wire 1 " clk $end
+$var wire 1 # dry $end
+$var wire 1 $ reset $end
+$var parameter 2 ' IDLE $end
+$var parameter 2 ( START_PUMP $end
+$var parameter 2 ) STOP_PUMP $end
+$var parameter 2 * WATERING $end
+$var reg 2 + current_state [1:0] $end
+$var reg 2 , next_state [1:0] $end
+$var reg 1 ! pump_on $end
+$upscope $end
+$scope task check_output $end
+$var reg 1 - expected $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b10 *
+b11 )
+b1 (
+b0 '
+$end
+#0
+$dumpvars
+x-
+b0 ,
+b0 +
+b0 &
+b0 %
+1$
+0#
+0"
+0!
+$end
+#5000
+1"
+#10000
+0"
+#12000
+0$
+#15000
+1"
+#20000
+0"
+#22000
+0-
+#23000
+b1 ,
+1#
+b1 &
+#25000
+1!
+b10 ,
+b1 +
+1"
+#30000
+0"
+#33000
+1-
+#34000
+b10 &
+#35000
+b10 +
+1"
+#40000
+0"
+#45000
+b11 ,
+0#
+b11 &
+1"
+#50000
+0"
+#55000
+0!
+b0 ,
+b11 +
+1"
+0-
+#56000
+b100 &
+#60000
+0"
+#65000
+b0 +
+1"
+#67000
+b101 &

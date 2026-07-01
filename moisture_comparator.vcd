@@ -1,0 +1,61 @@
+$date
+	Wed Jul  1 14:59:33 2026
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module moisture_comparator_tb $end
+$var wire 1 ! pump_on $end
+$var reg 8 " moisture [7:0] $end
+$var reg 8 # threshold [7:0] $end
+$var integer 32 $ fail_count [31:0] $end
+$var integer 32 % pass_count [31:0] $end
+$scope module uut $end
+$var wire 8 & moisture [7:0] $end
+$var wire 8 ' threshold [7:0] $end
+$var reg 1 ! pump_on $end
+$upscope $end
+$scope task check_output $end
+$var reg 1 ( expected $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+1(
+b101000 '
+b10100 &
+b0 %
+b0 $
+b101000 #
+b10100 "
+1!
+$end
+#5000
+b100011 "
+b100011 &
+b1 %
+#10000
+0!
+0(
+b101000 "
+b101000 &
+b10 %
+#15000
+b111100 "
+b111100 &
+b11 %
+#20000
+1!
+1(
+b1010 "
+b1010 &
+b100 %
+#25000
+b101 %
