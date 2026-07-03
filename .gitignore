@@ -1,11 +1,14 @@
+# Build files
+build/
+*.out
+a.out
+*_test
+
+# Waveforms
+*.vcd
+
 # macOS
 .DS_Store
 
 # VS Code
 .vscode/
-
-# Build files
-*.out
-*.vvp
-*.vcd
-*.log
