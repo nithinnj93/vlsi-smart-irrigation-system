@@ -1,84 +1,97 @@
-module uart_tx #
-
-(
-    parameter DATA_WIDTH = 8
-)
-
-(
+module uart_tx #(
+    parameter DATA_BITS = 8
+)(
     input wire clk,
     input wire reset,
 
+    input wire baud_tick,
+
     input wire tx_start,
-    input wire [DATA_WIDTH-1:0] data_in,
+
+    input wire [DATA_BITS-1:0] data_in,
 
     output reg tx,
     output reg busy
 );
+
+//======================================================
+// State Encoding
+//======================================================
 
 localparam IDLE  = 2'b00;
 localparam START = 2'b01;
 localparam DATA  = 2'b10;
 localparam STOP  = 2'b11;
 
+//======================================================
+// Internal Registers
+//======================================================
+
 reg [1:0] state;
 
-reg [DATA_WIDTH-1:0] shift_reg;
+reg [DATA_BITS-1:0] shift_reg;
+
 reg [2:0] bit_count;
+
+reg start_pending;
+
+//======================================================
+// Sequential Logic
+//======================================================
 
 always @(posedge clk or posedge reset)
 begin
 
     if(reset)
     begin
-        state <= IDLE;
-        tx <= 1'b1;
-        busy <= 1'b0;
-        bit_count <= 3'd0;
-    end
 
+        state <= IDLE;
+
+        tx <= 1'b1;
+
+        busy <= 1'b0;
+
+        shift_reg <= 0;
+
+        bit_count <= 0;
+
+        start_pending <= 0;
+
+    end
     else
     begin
+
+        //--------------------------------------------------
+        // Latch transmit request
+        //--------------------------------------------------
+
+        if(tx_start)
+            start_pending <= 1'b1;
+
+        //--------------------------------------------------
+        // FSM
+        //--------------------------------------------------
 
         case(state)
 
         IDLE:
         begin
-            tx <= 1'b1;
-            busy <= 1'b0;
-
-            if(tx_start)
-            begin
-                shift_reg <= data_in;
-                state <= START;
-            end
+            // Next step will go here
         end
 
         START:
         begin
-            tx <= 1'b0;
-            busy <= 1'b1;
-            bit_count <= 0;
-            state <= DATA;
+            // Next step will go here
         end
 
         DATA:
         begin
-
-            tx <= shift_reg[0];
-            shift_reg <= shift_reg >> 1;
-
-            if(bit_count == DATA_WIDTH-1)
-                state <= STOP;
-            else
-                bit_count <= bit_count + 1;
-
+            // Next step will go here
         end
 
         STOP:
         begin
-            tx <= 1'b1;
-            busy <= 1'b0;
-            state <= IDLE;
+            // Next step will go here
         end
 
         endcase
