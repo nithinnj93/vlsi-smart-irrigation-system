@@ -93,27 +93,6 @@ begin
     end
 end
 
-        always @(posedge clk or posedge reset)
-begin
-    if (reset)
-    begin
-        ...
-    end
-    else
-    begin
-        // Latch tx_start every clock
-        if (tx_start)
-            start_pending <= 1'b1;
-
-        // Only advance the FSM on baud_tick
-        if (baud_tick)
-        begin
-            case (state)
-                ...
-            endcase
-        end
-    end
-end
 
         DATA:
 begin
@@ -131,9 +110,12 @@ begin
     end
 end
         STOP:
-        begin
-            // Next step will go here
-        end
+begin
+    tx <= 1'b1;          // Stop bit
+    busy <= 1'b1;
+
+    state <= IDLE;
+end
 
         endcase
 
