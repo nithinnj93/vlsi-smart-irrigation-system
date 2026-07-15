@@ -75,9 +75,23 @@ begin
         case(state)
 
         IDLE:
-        begin
-            // Next step will go here
-        end
+begin
+    tx   <= 1'b1;
+    busy <= 1'b0;
+
+    if(start_pending && baud_tick)
+    begin
+        shift_reg <= data_in;
+
+        bit_count <= 0;
+
+        start_pending <= 1'b0;
+
+        busy <= 1'b1;
+
+        state <= START;
+    end
+end
 
         START:
         begin
