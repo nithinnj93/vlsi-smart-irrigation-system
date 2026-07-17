@@ -17,9 +17,9 @@ module uart_tx #(
     input  wire                  baud_tick,
     input  wire                  tx_start,
     input  wire [DATA_WIDTH-1:0] data_in,
-    output reg                   busy,
-    output reg                   tx,
-    output reg                   tx_done
+    output wire                  busy,
+    output wire                  tx,
+    output wire                  tx_done
 );
 
     //----------------------------------------------------------------------------
@@ -40,6 +40,13 @@ module uart_tx #(
     reg                  tx_reg, tx_next;
     reg                  busy_reg, busy_next;
     reg                  tx_done_reg, tx_done_next;
+
+    //----------------------------------------------------------------------------
+    // Output Port Binding (Continuous Assignments)
+    //----------------------------------------------------------------------------
+    assign tx      = tx_reg;
+    assign busy    = busy_reg;
+    assign tx_done = tx_done_reg;
 
     //----------------------------------------------------------------------------
     // Sequential Logic: Register Update (Synchronous Reset)

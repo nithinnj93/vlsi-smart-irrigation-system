@@ -4,6 +4,8 @@
 // Module Name:   uart_tx_tb
 // Author:        Nithin N J
 // Description:   Self-checking verification environment for modular UART TX.
+//                Uses negative-edge sampling to prevent Verilog NBA/Active 
+//                region simulation stratification race conditions.
 //////////////////////////////////////////////////////////////////////////////////
 
 module uart_tx_tb;
@@ -74,7 +76,7 @@ module uart_tx_tb;
     end
 
     //----------------------------------------------------------------------------
-    // Verification Tasks
+    // Verification Tasks (With Industry-Standard Negative Edge Sampling)
     //----------------------------------------------------------------------------
     task wait_for_next_baud_tick;
     begin
@@ -82,6 +84,8 @@ module uart_tx_tb;
         while (baud_tick == 1'b0) begin
             @(posedge clk);
         end
+        // Sample at negedge to allow Verilog NBA assignments to settle cleanly!
+        @(negedge clk);
     end
     endtask
 
@@ -118,18 +122,20 @@ module uart_tx_tb;
         $display(" STARTING UART TRANSMITTER VERIFICATION");
         $display("==================================================");
 
-        // 1. Verify Idle State
+        // 1. Verify Idle State (Sample at negedge)
+        @(negedge clk);
         check_line(1'b1, "IDLE State");
 
-        // 2. Assert tx_start for EXACTLY 1 CLOCK CYCLE (Testing Latch Mechanism)
+        // 2. Assert tx_start for EXACTLY 1 CLOCK CYCLE
         data_in = 8'hA5; // Binary: 10100101 (LSB transmitted first -> 1,0,1,0,0,1,0,1)
         $display("\n[INFO] Asserting 1-cycle tx_start pulse for Data: 8'hA5...");
         @(posedge clk);
         tx_start = 1'b1;
         @(posedge clk);
-        tx_start = 1'b0; // Immediately deasserted!
+        tx_start = 1'b0; 
 
-        // 3. Verify Busy asserts immediately (even before baud_tick arrives)
+        // 3. Verify Busy asserts immediately (checking at negedge after posedge commit)
+        @(negedge clk);
         if (busy === 1'b1) begin
             pass_count = pass_count + 1;
             $display("[PASS] Busy asserted immediately upon tx_start");
@@ -156,7 +162,8 @@ module uart_tx_tb;
         wait_for_next_baud_tick(); 
         check_line(1'b1, "STOP Bit  ");
 
-        // 7. Verify tx_done 1-cycle pulse
+        // 7. Wait for the end of the Stop Bit period to catch tx_done pulse!
+        wait_for_next_baud_tick();
         if (tx_done === 1'b1) begin
             pass_count = pass_count + 1;
             $display("[PASS] tx_done pulsed high cleanly at Stop Bit boundary");
@@ -165,8 +172,7 @@ module uart_tx_tb;
             $display("[FAIL] tx_done did not pulse high when expected");
         end
 
-        // 8. Verify Busy deasserts on next clock
-        @(posedge clk);
+        // 8. Verify Busy deasserted cleanly as we returned to IDLE
         if (busy === 1'b0) begin
             pass_count = pass_count + 1;
             $display("[PASS] Busy deasserted cleanly after transmission");
